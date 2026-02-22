@@ -1,0 +1,8 @@
+Portus_Certificates/
+Portus_Dock/
+venv/
+secrets.env
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store

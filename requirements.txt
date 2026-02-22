@@ -1,0 +1,9 @@
+Werkzeug==3.1.5
+cryptography==46.0.5
+fastapi==0.129.0
+uvicorn==0.41.0
+python-multipart==0.0.22
+aiofiles==25.1.0
+python-dotenv==1.2.1
+pyOpenSSL==25.3.0
+zeroconf==0.148.0

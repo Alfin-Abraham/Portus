@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap">
+    <style>
+        :root {
+            --bg-primary: #fafafa;
+            --bg-secondary: #ffffff;
+            --text-primary: #0a0a0a;
+            --text-secondary: #666666;
+            --accent: #0d93f2;
+            --accent-hover: #0d93f2;
+            --border: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        .dark {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #fafafa;
+            --text-secondary: #888686;
+            --accent: #0d93f2;
+            --accent-hover: #0d93f2;
+            --border: #2a2a2a;
+            --shadow: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .mono {
+            font-family: 'Space Mono', monospace;
+        }
+
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        @media (hover: hover) {
+            .card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 30px var(--shadow);
+            }
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        @media (hover: hover) {
+            .btn-primary:hover:not(:disabled) {
+                background-color: var(--accent-hover);
+                transform: scale(1.02);
+            }
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 3px solid var(--border);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+        }
+
+        @media (hover: hover) {
+            .btn-secondary:hover {
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+        }
+
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+
+        .file-item {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        @media (hover: hover) {
+            .file-item:hover {
+                transform: translateX(4px);
+            }
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            background-color: var(--bg-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone.drag-over {
+            border-color: var(--accent);
+            background-color: var(--bg-primary);
+        }
+
+        .modal {
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .progress-bar {
+            height: 21px;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-hover);
+        }
+
+        .preview-container {
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        .preview-container iframe,
+        .preview-container video,
+        .preview-container audio,
+        .preview-container img {
+            max-width: 100%;
+            max-height: 85vh;
+        }
+
+        .warning-banner {
+            background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.85;
+            }
+        }
+
+        .session-warning-modal {
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-align: center;
+            margin: 1rem 0;
+            font-family: 'Space Mono', monospace;
+        }
+
+        #authModal {
+            z-index: 9999 !important;
+            position: fixed;
+        }
+
+        .timer-warning {
+            color: #f59e0b;
+        }
+
+        .timer-critical {
+            color: #ef4444;
+            animation: pulse 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="card rounded-2xl p-8 max-w-md w-full mx-4 fade-in">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold mb-2">Portus File Share</h2>
+                <p class="text-secondary">Enter your PIN</p>
+            </div>
+            <form id="authForm" class="space-y-4">
+                <div>
+                    <input type="password" id="pinInput"
+                        class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:border-[var(--accent)] text-center text-2xl mono tracking-widest"
+                        placeholder="********" maxlength="8" pattern="[0-9]*" inputmode="numeric" required>
+                </div>
+                <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold">
+                    Unlock
+                </button>
+                <p id="authError" class="text-red-500 text-sm text-center hidden"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Session Timeout Warning Modal -->
+    <div id="sessionWarningModal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="card rounded-2xl p-8 max-w-md w-full mx-4 session-warning-modal">
+            <div class="text-center mb-6">
+                <div class="text-5xl mb-4">⏰</div>
+                <h2 class="text-2xl font-bold mb-2">Session Expiring Soon</h2>
+                <p class="text-secondary">Your session will expire in:</p>
+            </div>
+            <div id="sessionTimerDisplay" class="timer-display">2:00</div>
+            <p class="text-center text-secondary mb-6">Would you like to stay logged in?</p>
+            <div class="space-y-3">
+                <button id="stayLoggedInBtn" class="btn-primary w-full py-3 rounded-lg font-semibold">
+                    Continue
+                </button>
+                <button id="logoutNowBtn" class="btn-secondary w-full py-3 rounded-lg font-semibold">
+                    Log Out
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="card rounded-2xl p-6 max-w-md w-full mx-4 fade-in">
+            <div class="mb-6">
+                <div class="flex items-center space-x-3 mb-4">
+                    <h4 class="text-xl font-bold">Are you sure you want to delete</h4>
+                </div>
+                <p class="text-secondary">
+                    <strong id="deleteFileName" class="text-[var(--text-primary)]"></strong>
+                </p>
+                <p class="text-sm text-secondary mt-2">
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="flex gap-3">
+                <button id="cancelDelete" class="btn-secondary px-6 py-3 rounded-lg font-semibold flex-1">
+                    Cancel
+                </button>
+                <button id="confirmDelete"
+                    class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold flex-1 transition-all">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Preview Modal -->
+    <div id="previewModal" class="modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="preview-container card rounded-2xl p-6 mx-4 fade-in">
+            <div class="flex items-center justify-between mb-4">
+                <h3 id="previewTitle" class="text-xl font-bold truncate flex-1 mr-4"></h3>
+                <button id="closePreview" class="btn-secondary p-2 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div id="previewContent" class="overflow-auto"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="hidden flex flex-col min-h-screen">
+        <!-- Header -->
+        <header
+            class="border-b border-[var(--border)] sticky top-0 bg-[var(--bg-primary)] z-40 backdrop-blur-sm bg-opacity-95">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div>
+                            <h1 class="text-2xl font-bold">Portus</h1>
+                            <p class="text-xs text-secondary mono">Secure LAN File Sharing</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button id="themeToggle" class="btn-secondary p-3 rounded-lg">
+                            <svg id="sunIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
+                            </svg>
+                            <svg id="moonIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                                </path>
+                            </svg>
+                        </button>
+                        <button id="logoutBtn" class="btn-secondary p-3 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Section -->
+        <main class="container mx-auto px-4 pt-4 pb-8 flex-grow">
+            <!-- Upload Section -->
+            <section class="card rounded-2xl p-6 mb-8 min-h-[200px]">
+                <h2 class="text-2xl font-bold mb-6 flex items-center space-x-2">
+                    <span>Upload files</span>
+                </h2>
+
+                <div id="uploadZone" class="upload-zone rounded-xl p-8 text-center cursor-pointer">
+                    <input type="file" id="fileInput" multiple>
+                    <div class="text-4xl mb-3">☁️</div>
+                    <p class="text-lg font-semibold mb-1">Drop files here or click to browse</p>
+                    <p class="text-sm text-secondary">Max file size: 5 GB</p>
+                </div>
+
+                <div id="selectedFiles" class="hidden mt-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold">Selected Files</h3>
+                        <button id="clearBtn" class="text-red-500 hover:text-red-600 text-sm font-semibold">
+                            Clear All
+                        </button>
+                    </div>
+                    <div id="selectedFilesList" class="space-y-3 mb-4"></div>
+                    <div class="flex gap-3 justify-center">
+                        <button id="uploadBtn" class="btn-primary px-8 py-3 rounded-lg font-semibold w-auto">
+                            Upload
+                        </button>
+                        <button id="cancelUploadBtn"
+                            class="btn-secondary px-8 py-3 rounded-lg font-semibold w-auto hidden">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <div id="uploadProgress" class="hidden mt-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span id="uploadStatus" class="text-sm font-semibold">Uploading...</span>
+                    </div>
+                    <p id="uploadCurrentFile" class="text-xs text-secondary mb-1 hidden">
+                        <!-- Filled dynamically, e.g. "File 1/3: welcome.pdf" -->
+                    </p>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-5">
+                        <div id="progressBar" class="progress-bar rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Message section -->
+            <section id="uploadMessageSection" class="card rounded-2xl p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold">System status</h2>
+                </div>
+
+                <!-- Default status text -->
+                <p id="systemStatusText" class="text-gray-500">
+                    Ready
+                </p>
+
+                <!-- Dynamic messages -->
+                <div id="uploadMessage" class="hidden"></div>
+            </section>
+
+            <!-- Available files Section -->
+            <section class="card rounded-2xl p-6 mb-3">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold flex items-center space-x-2">
+                        <span>Available files</span>
+                    </h2>
+                    <div class="flex items-center space-x-3">
+                        <div id="autoRefreshIndicator"
+                            class="hidden flex items-center space-x-2 text-sm text-secondary">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="hidden md:inline">Auto-refresh active</span>
+                        </div>
+                        <button id="refreshBtn" class="btn-secondary px-4 py-2 rounded-lg flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                                </path>
+                            </svg>
+
+                        </button>
+                    </div>
+                </div>
+                <div id="filesList" class="space-y-3"></div>
+            </section>
+        </main>
+
+        <footer class="border-t border-[var(--border)] mt-auto">
+            <div class="container mx-auto px-4 py-3 text-center text-secondary text-sm">
+                <p>Portus | Secure LAN File Sharing</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ===== activity heartbeat (single global heartbeat for uploads, downloads, streaming) =====    
+        let _activityHeartbeatId = null;
+        let _activeFileOperations = 0;
+        const ACTIVITY_HEARTBEAT_MS = 30000;
+
+        function startActivityHeartbeat() {
+            if (_activityHeartbeatId) return;
+            registerRequest().catch(() => {});
+            _activityHeartbeatId = setInterval(() => {
+                registerRequest().catch(() => {});
+            }, ACTIVITY_HEARTBEAT_MS);
+        }
+
+        function stopActivityHeartbeat() {
+            if (!_activityHeartbeatId) return;
+            clearInterval(_activityHeartbeatId);
+            _activityHeartbeatId = null;
+        }
+
+        function markOperationStart() {
+            _activeFileOperations++;
+            if (_activeFileOperations === 1) startActivityHeartbeat();
+        }
+
+        function markOperationEnd() {
+            _activeFileOperations = Math.max(0, _activeFileOperations - 1);
+            if (_activeFileOperations === 0) stopActivityHeartbeat();
+        }
+        // ------------------------------
+        // CONFIGURATION & CONSTANTS
+        // ------------------------------
+        const SESSION_TIMEOUT_MS = 12 * 60 * 1000;
+        const WARNING_BEFORE_EXPIRY_MS = 2 * 60 * 1000;
+        const BACKOFF_INTERVALS = [3000, 5000, 10000, 20000, 30000];
+        const CHUNK_UPLOAD_SIZE = 3 * 1024 * 1024;
+        // ------------------------------
+        // DOM ELEMENTS - AUTHENTICATION & THEME
+        // ------------------------------
+        const authModal = document.getElementById('authModal');
+        const authForm = document.getElementById('authForm');
+        const pinInput = document.getElementById('pinInput');
+        const authError = document.getElementById('authError');
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        // ------------------------------
+        // DOM ELEMENTS - MAIN CONTENT & LAYOUT
+        // ------------------------------
+        const mainContent = document.getElementById('mainContent');
+        const logoutBtn = document.getElementById('logoutBtn');
+        // ------------------------------
+        // DOM ELEMENTS - UPLOAD ZONE
+        // ------------------------------
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const selectedFiles = document.getElementById('selectedFiles');
+        const selectedFilesList = document.getElementById('selectedFilesList');
+        const clearBtn = document.getElementById('clearBtn');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const uploadCurrentFile = document.getElementById('uploadCurrentFile');
+        const uploadMessage = document.getElementById('uploadMessage');
+        const systemStatusText = document.getElementById('systemStatusText');
+        // ------------------------------
+        // DOM ELEMENTS - FILE LIST & PREVIEW
+        // ------------------------------
+        const filesList = document.getElementById('filesList');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const autoRefreshIndicator = document.getElementById('autoRefreshIndicator');
+        const previewModal = document.getElementById('previewModal');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewContent = document.getElementById('previewContent');
+        const closePreview = document.getElementById('closePreview');
+        // ------------------------------
+        // DOM ELEMENTS - DELETE & SESSION MODALS
+        // ------------------------------
+        const deleteModal = document.getElementById('deleteModal');
+        const deleteFileName = document.getElementById('deleteFileName');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const sessionWarningModal = document.getElementById('sessionWarningModal');
+        const sessionTimerDisplay = document.getElementById('sessionTimerDisplay');
+        const stayLoggedInBtn = document.getElementById('stayLoggedInBtn');
+        const logoutNowBtn = document.getElementById('logoutNowBtn');
+        // ------------------------------
+        // APPLICATION STATE - FILE UPLOAD & SELECTION
+        // ------------------------------
+        let selectedFilesArray = [];
+        let uploadController = null;
+        let pendingDeleteFilename = null;
+        // ------------------------------
+        // APPLICATION STATE - FILE POLLING & CHANGE DETECTION
+        // ------------------------------
+        let backoffIndex = 0;
+        let changePollingInterval = null;
+        let lastKnownFilesHash = '';
+        // ------------------------------
+        // APPLICATION STATE - UPLOAD & NETWORK
+        // ------------------------------
+        let isUploading = false;
+        let sse = null;
+        let isServerShuttingDown = false;
+        let systemStatusTimer = null;
+        // Wake lock support to prevent device auto-lock during active transfers
+        let wakeLockSentinel = null;
+        let audioWakeContext = null;
+        let audioWakeSource = null;
+        let audioWakeElement = null;
+        let wakeLockMonitorInterval = null;
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLockSentinel = await navigator.wakeLock.request('screen');
+                    wakeLockSentinel.addEventListener('release', () => {
+                        wakeLockSentinel = null;
+                    });
+                    return;
+                }
+            } catch (err) {
+                console.warn('Wake Lock request failed:', err);
+            }
+            // Fallback: create a silent AudioContext and play a near-silent oscillator
+            try {
+                if (!audioWakeContext) {
+                    audioWakeContext = new(window.AudioContext || window.webkitAudioContext)();
+                    const gain = audioWakeContext.createGain();
+                    // tiny non-zero gain so some output exists
+                    gain.gain.value = 0.000001;
+                    // Prefer ConstantSourceNode to reduce CPU overhead where available
+                    let src = null;
+                    if (typeof audioWakeContext.createConstantSource === 'function') {
+                        try {
+                            src = audioWakeContext.createConstantSource();
+                            src.offset.value = 0;
+                        } catch (e) {
+                            src = null;
+                        }
+                    }
+                    if (!src) {
+                        src = audioWakeContext.createOscillator();
+                        src.type = 'sine';
+                        src.frequency.value = 1;
+                    }
+                    src.connect(gain);
+                    // route through a MediaStreamDestination so we can attach to an <audio> element
+                    const dest = audioWakeContext.createMediaStreamDestination();
+                    gain.connect(dest);
+                    // Do NOT connect gain to audioWakeContext.destination to avoid audible output and extra processing
+                    try {
+                        src.start();
+                    } catch (e) {}
+                    // Hidden audio element improves autoplay behavior on some iPadOS versions
+                    audioWakeElement = document.createElement('audio');
+                    audioWakeElement.style.display = 'none';
+                    audioWakeElement.muted = true;
+                    audioWakeElement.playsInline = true;
+                    audioWakeElement.loop = true;
+                    try {
+                        audioWakeElement.srcObject = dest.stream;
+                    } catch (e) {}
+                    try {
+                        document.body.appendChild(audioWakeElement);
+                    } catch (e) {}
+                    try {
+                        await audioWakeElement.play();
+                    } catch (e) {}
+                    audioWakeSource = {
+                        src,
+                        gain,
+                        dest
+                    };
+                } else if (audioWakeContext.state === 'suspended') {
+                    try {
+                        await audioWakeContext.resume();
+                    } catch (e) {}
+                    if (audioWakeElement) try {
+                        await audioWakeElement.play();
+                    } catch (e) {}
+                }
+                // Monitor and attempt to re-acquire if platform releases locks
+                if (wakeLockMonitorInterval) clearInterval(wakeLockMonitorInterval);
+                wakeLockMonitorInterval = setInterval(async () => {
+                    if (isUploading && !wakeLockSentinel) {
+                        try {
+                            await requestWakeLock();
+                        } catch (e) {}
+                    }
+                }, 10000);
+            } catch (err) {
+                console.warn('Audio wake fallback failed:', err);
+            }
+        }
+        async function releaseWakeLock() {
+            try {
+                if (wakeLockSentinel) {
+                    await wakeLockSentinel.release();
+                    wakeLockSentinel = null;
+                }
+            } catch (err) {
+                console.warn('Wake Lock release failed:', err);
+            }
+            try {
+                if (audioWakeSource) {
+                    try {
+                        if (audioWakeSource.src && typeof audioWakeSource.src.stop === 'function') audioWakeSource
+                            .src.stop();
+                    } catch (e) {}
+                    try {
+                        if (audioWakeSource.gain) audioWakeSource.gain.disconnect();
+                    } catch (e) {}
+                    try {
+                        if (audioWakeSource.dest) audioWakeSource.dest.disconnect();
+                    } catch (e) {}
+                    audioWakeSource = null;
+                }
+                if (audioWakeElement) {
+                    try {
+                        audioWakeElement.pause();
+                    } catch (e) {}
+                    try {
+                        audioWakeElement.removeAttribute('src');
+                    } catch (e) {}
+                    try {
+                        document.body.removeChild(audioWakeElement);
+                    } catch (e) {}
+                    audioWakeElement = null;
+                }
+                if (audioWakeContext) {
+                    try {
+                        await audioWakeContext.close();
+                    } catch (e) {}
+                    audioWakeContext = null;
+                }
+                if (wakeLockMonitorInterval) {
+                    clearInterval(wakeLockMonitorInterval);
+                    wakeLockMonitorInterval = null;
+                }
+            } catch (err) {
+                console.warn('Audio wake cleanup failed:', err);
+            }
+        }
+
+        function releaseWakeLockIfIdle() {
+            if (!isUploading) {
+                releaseWakeLock().catch(() => {});
+            }
+        }
+        document.addEventListener('visibilitychange', async () => {
+            if (document.visibilityState === 'visible') {
+                // Re-acquire wake lock if needed when user returns to the app
+                if (isUploading) {
+                    try {
+                        await requestWakeLock();
+                    } catch (e) {}
+                }
+            }
+        });
+        // ------------------------------
+        // APPLICATION STATE - SESSION MANAGEMENT
+        // ------------------------------
+        let sessionWarningTimer = null;
+        let sessionWarningShown = false;
+        let sessionExpiryTime = null;
+        let sessionCheckInterval = null;
+        let sessionCountdownInterval = null;
+        let serverConnectivityCheckInterval = null;
+        // ------------------------------
+        // EVENT HANDLERS - AUTHENTICATION
+        // ------------------------------
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pin = pinInput.value;
+            authError.classList.add('hidden');
+            // Prevent auth attempts if server is shutting down
+            if (isServerShuttingDown) {
+                authError.textContent = 'Server currently unavailable';
+                authError.classList.remove('hidden');
+                return;
+            }
+            try {
+                const response = await fetch('/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pin
+                    }),
+                    credentials: 'same-origin'
+                });
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    authModal.classList.add('hidden');
+                    pinInput.value = '';
+                    showMainContent();
+                } else {
+                    authError.textContent = data.error || 'Invalid PIN';
+                    authError.classList.remove('hidden');
+                    pinInput.value = '';
+                }
+            } catch (err) {
+                authError.textContent = 'Connection error. Please try again.';
+                authError.classList.remove('hidden');
+            }
+        });
+        // ------------------------------
+        // EVENT HANDLERS - THEME & UI
+        // ------------------------------
+        themeToggle.addEventListener('click', async () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            sunIcon.classList.toggle('hidden', isDark);
+            moonIcon.classList.toggle('hidden', !isDark);
+            try {
+                await fetch('/theme', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        theme: isDark ? 'dark' : 'light'
+                    }),
+                    credentials: 'same-origin'
+                });
+            } catch (err) {
+                console.error('Failed to save theme preference');
+            }
+        });
+        // ------------------------------
+        // EVENT HANDLERS - LOGOUT & SESSION CLEARING
+        // ------------------------------
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                // Clear session timeout tracking
+                clearSessionTracking();
+                stopServerConnectivityCheck();
+                // Stop all polling
+                stopChangePolling();
+                // Clear the session on the server
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+                if (sse) {
+                    try {
+                        sse.close();
+                    } catch (e) {}
+                    sse = null;
+                }
+                // Force reload regardless of response to ensure clean state
+                window.location.reload(true);
+            } catch (err) {
+                console.error('Logout error:', err);
+                if (sse) {
+                    try {
+                        sse.close();
+                    } catch (e) {}
+                    sse = null;
+                }
+                // Force reload even on error
+                window.location.reload(true);
+            }
+        });
+        // ------------------------------
+        // SESSION MANAGEMENT FUNCTIONS
+        // ------------------------------
+        function initSessionTracking() {
+            // Calculate session expiry time
+            sessionExpiryTime = Date.now() + SESSION_TIMEOUT_MS;
+            // Check session status every 5 seconds
+            sessionCheckInterval = setInterval(checkSessionStatus, 5000);
+        }
+
+        function clearSessionTracking() {
+            if (sessionWarningTimer) {
+                clearTimeout(sessionWarningTimer);
+                sessionWarningTimer = null;
+            }
+            if (sessionCheckInterval) {
+                clearInterval(sessionCheckInterval);
+                sessionCheckInterval = null;
+            }
+            if (sessionCountdownInterval) {
+                clearInterval(sessionCountdownInterval);
+                sessionCountdownInterval = null;
+            }
+            stopServerConnectivityCheck();
+            sessionWarningShown = false;
+            sessionWarningModal.classList.add('hidden');
+        }
+
+        function resetSessionTimer() {
+            // Reset the expiry time
+            sessionExpiryTime = Date.now() + SESSION_TIMEOUT_MS;
+            // If warning was shown, hide it
+            if (sessionWarningShown) {
+                sessionWarningShown = false;
+                sessionWarningModal.classList.add('hidden');
+                if (sessionCountdownInterval) {
+                    clearInterval(sessionCountdownInterval);
+                    sessionCountdownInterval = null;
+                }
+            }
+        }
+
+        function checkSessionStatus() {
+            if (!sessionExpiryTime) return;
+            const timeLeft = sessionExpiryTime - Date.now();
+            // If session has expired
+            if (timeLeft <= 0) {
+                performSessionExpiredLogout();
+                return;
+            }
+            // If warning threshold reached and not already shown
+            if (timeLeft <= WARNING_BEFORE_EXPIRY_MS && !sessionWarningShown) {
+                showSessionWarning();
+            }
+        }
+
+        function showSessionWarning() {
+            sessionWarningShown = true;
+            sessionWarningModal.classList.remove('hidden');
+            // Start countdown display
+            updateSessionCountdown();
+            sessionCountdownInterval = setInterval(updateSessionCountdown, 1000);
+        }
+
+        function updateSessionCountdown() {
+            if (!sessionExpiryTime) return;
+            const timeLeft = Math.max(0, sessionExpiryTime - Date.now());
+            const minutes = Math.floor(timeLeft / 60000);
+            const seconds = Math.floor((timeLeft % 60000) / 1000);
+            const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            sessionTimerDisplay.textContent = display;
+            // Update styling based on time left
+            sessionTimerDisplay.classList.remove('timer-warning', 'timer-critical');
+            if (timeLeft <= 60000) { // Less than 1 minute
+                sessionTimerDisplay.classList.add('timer-critical');
+            } else {
+                sessionTimerDisplay.classList.add('timer-warning');
+            }
+            // Auto-logout if time runs out
+            if (timeLeft <= 0) {
+                if (sessionCountdownInterval) {
+                    clearInterval(sessionCountdownInterval);
+                    sessionCountdownInterval = null;
+                }
+                sessionWarningModal.classList.add('hidden');
+                // Perform actual logout on server before showing login page
+                performSessionExpiredLogout();
+            }
+        }
+        async function performSessionExpiredLogout() {
+            // Clear all session tracking
+            clearSessionTracking();
+            stopServerConnectivityCheck();
+            stopChangePolling();
+            try {
+                // Call logout endpoint to clear server-side session
+                await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+            } catch (err) {
+                console.error('Logout error during session expiry:', err);
+            }
+            if (sse) {
+                try {
+                    sse.close();
+                } catch (e) {}
+                sse = null;
+            }
+            // Show message and reload to login page
+            showMessage('Session expired. Please log in again.', 'session-expired');
+            setTimeout(() => {
+                window.location.reload(true);
+            }, 2000);
+        }
+        // Handle browser back/forward navigation to maintain logout state
+        window.addEventListener('popstate', async function(event) {
+            // Check authentication status when user navigates with browser buttons
+            try {
+                const authCheck = await fetch('/check-auth', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+                const authData = await authCheck.json();
+                if (!authData.authenticated) {
+                    // User is not authenticated, show login page
+                    clearSessionTracking();
+                    stopServerConnectivityCheck();
+                    stopChangePolling();
+                    mainContent.classList.add('hidden');
+                    authModal.classList.remove('hidden');
+                    // Clear any sensitive data from the page
+                    filesList.innerHTML = '';
+                    selectedFilesArray = [];
+                    displaySelectedFiles();
+                }
+            } catch (err) {
+                // On error, show login page to be safe
+                clearSessionTracking();
+                stopServerConnectivityCheck();
+                stopChangePolling();
+                mainContent.classList.add('hidden');
+                authModal.classList.remove('hidden');
+            }
+        });
+        // ------------------------------
+        // EVENT HANDLERS - SESSION WARNING MODAL
+        // ------------------------------
+        stayLoggedInBtn.addEventListener('click', async () => {
+            if (isServerShuttingDown) {
+                showMessage('Server unavailable', 'session-expired');
+                return;
+            }
+            try {
+                // Make a request to refresh the session
+                await registerRequest();
+                // Reset the session timer
+                resetSessionTimer();
+                showMessage('Session extended successfully', 'success');
+            } catch (err) {
+                showMessage('Failed to extend session', 'session-expired');
+            }
+        });
+        logoutNowBtn.addEventListener('click', async () => {
+            clearSessionTracking();
+            stopServerConnectivityCheck();
+            stopChangePolling();
+            try {
+                await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+            if (sse) {
+                try {
+                    sse.close();
+                } catch (e) {}
+                sse = null;
+            }
+            window.location.reload(true);
+        });
+        // ------------------------------
+        // ACTIVITY & CHANGE NOTIFICATION FUNCTIONS
+        // ------------------------------
+        async function registerRequest() {
+            resetSessionTimer();
+            try {
+                await fetch('/register-activity', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+            } catch (err) {
+                console.error('Failed to register activity:', err);
+            }
+        }
+        // File change detection with exponential backoff
+        async function notifyServerOfChange() {
+            try {
+                await fetch('/notify-change', {
+                    method: 'POST',
+                    credentials: 'same-origin'
+                });
+            } catch (err) {
+                console.error('Failed to notify server of change:', err);
+            }
+        }
+        // ------------------------------
+        // FILE CHANGE DETECTION & POLLING
+        // ------------------------------
+        async function checkForFileChanges() {
+            try {
+                const response = await fetch('/check-changes', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+                if (response.status === 401) {
+                    stopChangePolling();
+                    showMessage('Session expired. Please log in again.', 'session-expired');
+                    setTimeout(() => location.reload(), 2000);
+                    return false;
+                }
+                const data = await response.json();
+                if (data.files_hash && data.files_hash !== lastKnownFilesHash) {
+                    lastKnownFilesHash = data.files_hash;
+                    await loadFiles();
+                    backoffIndex = 0;
+                    return true;
+                }
+                return false;
+            } catch (err) {
+                console.error('Error checking for changes:', err);
+                return false;
+            }
+        }
+
+        function startChangePolling() {
+            if (changePollingInterval) return;
+            autoRefreshIndicator.classList.remove('hidden');
+            const poll = async () => {
+                await checkForFileChanges();
+                // Use exponential backoff when no changes detected
+                const interval = BACKOFF_INTERVALS[Math.min(backoffIndex, BACKOFF_INTERVALS.length - 1)];
+                changePollingInterval = setTimeout(poll, interval);
+                // Increase backoff index if we haven't detected changes
+                if (backoffIndex < BACKOFF_INTERVALS.length - 1) {
+                    backoffIndex++;
+                }
+            };
+            poll();
+        }
+
+        function stopChangePolling() {
+            if (changePollingInterval) {
+                clearTimeout(changePollingInterval);
+                changePollingInterval = null;
+            }
+            autoRefreshIndicator.classList.add('hidden');
+        }
+        // ------------------------------
+        // SERVER-SENT EVENTS (SSE) & SERVER MANAGEMENT
+        // ------------------------------
+        // Initialize Server-Sent Events (SSE) to get immediate shutdown notifications
+        // SSE reconnect helpers
+        let sseReconnectAttempts = 0;
+        let sseReconnectTimeout = null;
+        async function tryReconnectSSE() {
+            if (isServerShuttingDown) return;
+            // If EventSource is still open try closing it first
+            if (sse) {
+                try {
+                    sse.close();
+                } catch (e) {}
+                sse = null;
+            }
+            const SSE_RECONNECT_DELAYS = [1000, 2000, 5000, 10000, 15000];
+            const maxAttempts = SSE_RECONNECT_DELAYS.length;
+            const delay = SSE_RECONNECT_DELAYS[Math.min(sseReconnectAttempts, SSE_RECONNECT_DELAYS.length - 1)];
+            // Clear any pending reconnect timer
+            if (sseReconnectTimeout) {
+                clearTimeout(sseReconnectTimeout);
+                sseReconnectTimeout = null;
+            }
+            sseReconnectTimeout = setTimeout(async () => {
+                try {
+                    // Quick health check before attempting SSE reconnect
+                    const res = await fetch('/health', {
+                        cache: 'no-store',
+                        credentials: 'same-origin',
+                        signal: AbortSignal.timeout(2000)
+                    });
+                    if (res.ok) {
+                        // Server is reachable — reset attempts and re-init SSE
+                        sseReconnectAttempts = 0;
+                        initSSE();
+                        return;
+                    }
+                    if (res.status === 503) {
+                        handleServerShutdown('Server is shutting down. Please log in again.');
+                        return;
+                    }
+                } catch (err) {
+                    // fetch failed — likely network issue or server unreachable
+                }
+                sseReconnectAttempts++;
+                if (sseReconnectAttempts >= maxAttempts) {
+                    handleServerShutdown('Lost connection to server. Please log in again.');
+                } else {
+                    // Try again with increased backoff
+                    tryReconnectSSE();
+                }
+            }, delay);
+        }
+
+        function initSSE() {
+            try {
+                if (sse) {
+                    try {
+                        sse.close();
+                    } catch (e) {}
+                }
+                // Establish SSE connection
+                sse = new EventSource('/events');
+                sse.addEventListener('connected', (e) => {
+                    // Connection successfully established
+                    console.log('SSE connection established');
+                    fetch('/check-auth', {
+                            credentials: 'same-origin',
+                            cache: 'no-store'
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            if (!data.authenticated) {
+                                handleServerShutdown('Server restarted. Please log in again.');
+                            } else {
+                                // Session is valid — clear any lingering shutdown state
+                                sseReconnectAttempts = 0;
+                                isServerShuttingDown = false;
+                            }
+                        });
+                    // .catch(() => {});
+                });
+                sse.addEventListener('shutdown', (e) => {
+                    // Server explicitly sent shutdown — show login immediately
+                    console.log('Server shutdown event received');
+                    handleServerShutdown(e && e.data ? e.data :
+                        'Server is shutting down. Please log in again.');
+                });
+                sse.addEventListener('open', (e) => {
+                    // Connection established or reconnected
+                    sseReconnectAttempts = 0;
+                    if (isServerShuttingDown) {
+                        // If we thought server was down but connection returned, clear flag
+                        isServerShuttingDown = false;
+                    }
+                });
+                sse.onerror = function(e) {
+                    // Don't assume shutdown immediately. Try reconnection with health checks.
+                    console.warn('SSE connection error — scheduling reconnect', e);
+                    tryReconnectSSE();
+                };
+            } catch (err) {
+                console.error('Failed to initialize SSE:', err);
+            }
+        }
+        // Handle server shutdown or lost connection: show login modal immediately
+        function handleServerShutdown(message) {
+            if (isServerShuttingDown) return;
+            isServerShuttingDown = true;
+            try {
+                clearSessionTracking();
+            } catch (e) {}
+            try {
+                stopChangePolling();
+            } catch (e) {}
+            try {
+                stopServerConnectivityCheck();
+            } catch (e) {}
+            // Stop all active fetches
+            try {
+                if (uploadController) {
+                    uploadController.abort();
+                }
+            } catch (e) {}
+            // Close SSE connection
+            if (sse) {
+                try {
+                    sse.close();
+                } catch (e) {}
+                sse = null;
+            }
+            // Stop upload if in progress
+            try {
+                if (isUploading) {
+                    isUploading = false;
+                    uploadProgress.classList.add('hidden');
+                    uploadBtn.disabled = false;
+                    clearBtn.disabled = false;
+                    clearBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    cancelUploadBtn.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                }
+            } catch (e) {}
+            // Reset theme to dark (default)
+            try {
+                document.documentElement.classList.add('dark');
+                if (sunIcon) sunIcon.classList.add('hidden');
+                if (moonIcon) moonIcon.classList.remove('hidden');
+            } catch (e) {}
+            // Close overlay modals and stop preview media immediately.
+            try {
+                previewModal.classList.add('hidden');
+                markOperationEnd();
+                previewContent.innerHTML = '';
+                deleteModal.classList.add('hidden');
+                sessionWarningModal.classList.add('hidden');
+            } catch (e) {}
+            // Show shutdown message on the System Status widget.
+            try {
+                const shutdownMsg = message || 'Server has shut down. Returning to login...';
+                if (systemStatusTimer) {
+                    clearTimeout(systemStatusTimer);
+                    systemStatusTimer = null;
+                }
+                systemStatusText.textContent = shutdownMsg;
+                systemStatusText.className = 'text-orange-500 font-medium';
+                systemStatusText.classList.remove('hidden');
+                uploadMessage.classList.add('hidden');
+            } catch (e) {
+                console.error('Error while handling server shutdown UI:', e);
+            }
+            // After 5 seconds transition to the login screen.
+            setTimeout(() => {
+                try {
+                    mainContent.classList.add('hidden');
+                    filesList.innerHTML = '';
+                    selectedFilesArray = [];
+                    displaySelectedFiles();
+                } catch (e) {}
+                try {
+                    authModal.classList.remove('hidden');
+                    authModal.style.zIndex = '9999';
+                } catch (e) {}
+            }, 5000);
+            // Try to clear server session but don't block UI
+            try {
+                fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                }).catch(() => {});
+            } catch (e) {}
+        }
+        // ------------------------------
+        // CORE APPLICATION INITIALIZATION HELPER
+        // ------------------------------
+        async function showMainContent() {
+            mainContent.classList.remove('hidden');
+            window.scrollTo(0, 0);
+            // Reset shutdown flag when returning to main content
+            isServerShuttingDown = false;
+            // Initialize session tracking
+            initSessionTracking();
+            // Start SSE to listen for shutdown notifications
+            initSSE();
+            // Start periodic server connectivity check
+            startServerConnectivityCheck();
+            // Seed the hash first so polling doesn't immediately trigger a redundant load
+            try {
+                const r = await fetch('/check-changes', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+                const data = await r.json();
+                lastKnownFilesHash = data.files_hash || '';
+            } catch (e) {}
+            await loadFiles();
+            startChangePolling();
+        }
+        // ------------------------------
+        // SERVER CONNECTIVITY MONITORING
+        // ------------------------------
+        function startServerConnectivityCheck() {
+            if (serverConnectivityCheckInterval) {
+                clearInterval(serverConnectivityCheckInterval);
+            }
+            serverConnectivityCheckInterval = setInterval(async () => {
+                if (isServerShuttingDown) return;
+                try {
+                    const r = await fetch('/check-auth', {
+                        credentials: 'same-origin',
+                        cache: 'no-store',
+                        signal: AbortSignal.timeout(4000)
+                    });
+                    const data = await r.json();
+                    if (!data.authenticated) {
+                        handleServerShutdown('Session lost. Please log in again.');
+                    }
+                } catch (err) {
+                    // Network error — don't assume immediate shutdown; try reconnect sequence
+                    console.warn('Connectivity check failed — attempting reconnect', err);
+                    if (!isServerShuttingDown) {
+                        tryReconnectSSE();
+                    }
+                }
+            }, 10000); // Checks every 10 second to cover idle uploads/downloads
+        }
+
+        function stopServerConnectivityCheck() {
+            if (serverConnectivityCheckInterval) {
+                clearInterval(serverConnectivityCheckInterval);
+                serverConnectivityCheckInterval = null;
+            }
+        }
+        // ------------------------------
+        // EVENT HANDLERS - FILE UPLOAD ZONE
+        // ------------------------------
+        // File Selection
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('drag-over');
+        });
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('drag-over');
+        });
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length > 0) {
+                // Append new files while avoiding exact duplicates by name+size
+                const existingKeys = new Set(selectedFilesArray.map(f => `${f.name}_${f.size}`));
+                files.forEach(f => {
+                    const k = `${f.name}_${f.size}`;
+                    if (!existingKeys.has(k)) {
+                        selectedFilesArray.push(f);
+                        existingKeys.add(k);
+                    }
+                });
+                displaySelectedFiles();
+            }
+        });
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                // Append new selections instead of replacing existing selections
+                const existingKeys = new Set(selectedFilesArray.map(f => `${f.name}_${f.size}`));
+                files.forEach(f => {
+                    const k = `${f.name}_${f.size}`;
+                    if (!existingKeys.has(k)) {
+                        selectedFilesArray.push(f);
+                        existingKeys.add(k);
+                    }
+                });
+                displaySelectedFiles();
+            }
+        });
+
+        function displaySelectedFiles() {
+            if (selectedFilesArray.length === 0) {
+                selectedFiles.classList.add('hidden');
+                return;
+            }
+            selectedFiles.classList.remove('hidden');
+            selectedFilesList.innerHTML = selectedFilesArray.map((file, index) => `
+                <div class="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                    <div class="flex items-center space-x-3 flex-1 min-w-0">
+                        <div class="text-2xl">${getFileIcon(file.name)}</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold truncate text-sm text-gray-900 dark:text-gray-100">${file.name}</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">${formatFileSize(file.size)}</p>
+                        </div>
+                    </div>
+                    <button onclick="removeFile(${index})" class="remove-file-btn text-red-500 hover:text-red-600 ml-2 ${isUploading ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+        window.removeFile = function(index) {
+            // Prevent removing files during upload
+            if (isUploading) {
+                return;
+            }
+            selectedFilesArray.splice(index, 1);
+            displaySelectedFiles();
+        };
+        clearBtn.addEventListener('click', () => {
+            // Prevent clearing during upload
+            if (isUploading) {
+                return;
+            }
+            selectedFilesArray = [];
+            displaySelectedFiles();
+            fileInput.value = '';
+        });
+        // ------------------------------
+        // EVENT HANDLERS - FILE UPLOAD BUTTON
+        // ------------------------------
+        // File Upload - Chunked resumable upload with progress and retries
+        uploadBtn.addEventListener('click', async () => {
+            if (selectedFilesArray.length === 0) return;
+            // Prevents multiple concurrent uploads from repeated clicks
+            if (isUploading) return;
+            isUploading = true;
+            try {
+                await requestWakeLock();
+            } catch (e) {}
+            uploadProgress.classList.remove('hidden');
+            uploadBtn.disabled = true;
+            clearBtn.disabled = true;
+            clearBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            cancelUploadBtn.classList.remove('hidden');
+            uploadMessage.classList.add('hidden');
+            displaySelectedFiles();
+            let cancelled = false;
+            let heartbeatId = null;
+            uploadController = new AbortController();
+            const finishUpload = (opts = {}) => {
+                const {
+                    resumePolling = false
+                } = opts;
+                if (heartbeatId) {
+                    markOperationEnd();
+                    heartbeatId = null;
+                }
+                setTimeout(() => {
+                    uploadProgress.classList.add('hidden');
+                    uploadBtn.disabled = false;
+                    clearBtn.disabled = false;
+                    clearBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    cancelUploadBtn.classList.add('hidden');
+                    if (!cancelled) {
+                        progressBar.style.width = '100%';
+                    } else {
+                        progressBar.style.width = '0%';
+                    }
+                    uploadStatus.textContent = '';
+                    isUploading = false;
+                    uploadController = null;
+                    displaySelectedFiles();
+                    try {
+                        releaseWakeLockIfIdle();
+                    } catch (e) {}
+                    if (isServerShuttingDown) {
+                        handleServerShutdown(
+                            'Server shut down during upload. Please log in again.');
+                    }
+                }, 500);
+            };
+            cancelUploadBtn.onclick = () => {
+                cancelled = true;
+                if (uploadController) {
+                    try {
+                        uploadController.abort();
+                    } catch (e) {}
+                }
+            };
+            try {
+                await registerRequest();
+                heartbeatId = setInterval(() => {
+                    registerRequest().catch(() => {});
+                }, 30000);
+            } catch (e) {}
+            try {
+                const totalBytes = selectedFilesArray.reduce((sum, f) => sum + f.size, 0);
+                let uploadedBytes = 0;
+                const updateProgress = (fileOffset, fileSize) => {
+                    const overall = uploadedBytes + fileOffset;
+                    const percent = totalBytes > 0 ? Math.round((overall / totalBytes) * 100) : 0;
+                    progressBar.style.width = percent + '%';
+                    uploadStatus.textContent = `Uploading (${percent}%)`;
+                };
+                const totalFiles = selectedFilesArray.length;
+                let fileIndex = 0;
+                for (const file of selectedFilesArray) {
+                    if (cancelled) break;
+                    // Update per-file label
+                    if (uploadCurrentFile) {
+                        uploadCurrentFile.textContent = `File ${fileIndex + 1}/${totalFiles}: ${file.name}`;
+                        uploadCurrentFile.classList.remove('hidden');
+                    }
+                    // Initialize chunked upload on the server
+                    const initRes = await fetch('/upload-init', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            size: file.size
+                        }),
+                        credentials: 'same-origin',
+                        cache: 'no-store',
+                        signal: uploadController.signal
+                    });
+                    if (initRes.status === 401) {
+                        showMessage('Session expired. Please log in again.', 'session-expired');
+                        setTimeout(() => location.reload(), 2000);
+                        finishUpload();
+                        return;
+                    }
+                    if (!initRes.ok) {
+                        let errMsg = 'Upload init failed';
+                        try {
+                            const d = await initRes.json();
+                            if (d && d.error) errMsg = d.error;
+                        } catch (_) {}
+                        showMessage(errMsg, 'warning');
+                        finishUpload();
+                        return;
+                    }
+                    const initData = await initRes.json();
+                    const uploadId = initData.upload_id;
+                    if (!uploadId) {
+                        showMessage('Upload initialization failed: missing upload_id', 'warning');
+                        finishUpload();
+                        return;
+                    }
+                    let fileOffset = 0;
+                    while (fileOffset < file.size) {
+                        if (cancelled) break;
+                        const end = Math.min(file.size, fileOffset + CHUNK_UPLOAD_SIZE);
+                        const chunk = file.slice(fileOffset, end);
+                        let chunkUploaded = false;
+                        let attempt = 0;
+                        while (!chunkUploaded && !cancelled) {
+                            try {
+                                const res = await fetch(
+                                    `/upload-chunk?upload_id=${encodeURIComponent(uploadId)}&offset=${fileOffset}`, {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/octet-stream'
+                                        },
+                                        body: chunk,
+                                        credentials: 'same-origin',
+                                        cache: 'no-store',
+                                        signal: uploadController.signal
+                                    });
+                                if (res.status === 401) {
+                                    showMessage('Session expired. Please log in again.', 'session-expired');
+                                    setTimeout(() => location.reload(), 2000);
+                                    finishUpload();
+                                    return;
+                                }
+                                if (!res.ok) {
+                                    let errText = 'Chunk upload failed';
+                                    try {
+                                        const jd = await res.json();
+                                        if (jd && jd.error) errText = jd.error;
+                                    } catch (_) {}
+                                    showMessage(errText, 'warning');
+                                    finishUpload();
+                                    return;
+                                }
+                                const jd = await res.json().catch(() => ({}));
+                                const received = jd && typeof jd.received === 'number' ? jd.received : null;
+                                if (received !== null) {
+                                    // Keep UI progress in sync with server-reported bytes
+                                    const fileProgressBytes = Math.min(received, file.size);
+                                    updateProgress(fileProgressBytes, file.size);
+                                } else {
+                                    updateProgress(fileOffset + chunk.size, file.size);
+                                }
+                                chunkUploaded = true;
+                            } catch (err) {
+                                if (cancelled || (err && err.name === 'AbortError')) {
+                                    // Cancel or app-initiated abort
+                                    finishUpload();
+                                    return;
+                                }
+                                // Network/visibility issue: retry same chunk with backoff
+                                const delay = BACKOFF_INTERVALS[Math.min(attempt, BACKOFF_INTERVALS.length -
+                                    1)];
+                                attempt += 1;
+                                await new Promise(r => setTimeout(r, delay));
+                            }
+                        }
+                        if (!chunkUploaded) {
+                            // Could not upload this chunk after retries
+                            showMessage('Upload failed. Please try again.', 'warning');
+                            finishUpload();
+                            return;
+                        }
+                        fileOffset = end;
+                    }
+                    if (cancelled) break;
+                    // Finalize this file on server
+                    const completeRes = await fetch('/upload-complete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            upload_id: uploadId
+                        }),
+                        credentials: 'same-origin',
+                        cache: 'no-store',
+                        signal: uploadController.signal
+                    });
+                    if (completeRes.status === 401) {
+                        showMessage('Session expired. Please log in again.', 'session-expired');
+                        setTimeout(() => location.reload(), 2000);
+                        finishUpload();
+                        return;
+                    }
+                    if (!completeRes.ok) {
+                        let errMsg = 'Upload finalization failed';
+                        try {
+                            const d = await completeRes.json();
+                            if (d && d.error) errMsg = d.error;
+                        } catch (_) {}
+                        showMessage(errMsg, 'warning');
+                        finishUpload();
+                        return;
+                    }
+                    uploadedBytes += file.size;
+                    fileIndex += 1;
+                }
+                if (uploadCurrentFile) {
+                    uploadCurrentFile.classList.add('hidden');
+                    uploadCurrentFile.textContent = '';
+                }
+                if (!cancelled) {
+                    showMessage('All files uploaded successfully', 'upload-success');
+                    selectedFilesArray = [];
+                    displaySelectedFiles();
+                    fileInput.value = '';
+                    uploadStatus.textContent = 'Upload complete';
+                    try {
+                        await notifyServerOfChange();
+                    } catch (e) {}
+                    try {
+                        await loadFiles();
+                    } catch (e) {}
+                    backoffIndex = 0;
+                    finishUpload({
+                        resumePolling: true
+                    });
+                } else {
+                    showMessage('Upload cancelled', 'warning');
+                    finishUpload();
+                }
+            } catch (err) {
+                if (!cancelled) {
+                    showMessage(err && err.message ? err.message : 'Upload failed. Please try again.',
+                        'warning');
+                }
+                finishUpload();
+            }
+        });
+        // ------------------------------
+        // FILE LISTING & MANAGEMENT FUNCTIONS
+        // ------------------------------
+        async function loadFiles() {
+            try {
+                await registerRequest();
+                const response = await fetch('/files', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+                if (response.status === 401) {
+                    stopChangePolling();
+                    showMessage('Session expired. Please log in again.', 'session-expired');
+                    setTimeout(() => location.reload(), 2000);
+                    return;
+                }
+                const files = await response.json();
+                if (!files || files.error) {
+                    filesList.innerHTML =
+                        '<div class="text-center text-red-500 py-12"><p>Error loading files</p></div>';
+                    return;
+                }
+                if (Array.isArray(files) && files.length === 0) {
+                    filesList.innerHTML =
+                        '<div class="text-center text-secondary py-12"><div class="text-5xl mb-4"></div><p>No files available</p></div>';
+                    return;
+                }
+                filesList.innerHTML = '';
+                (Array.isArray(files) ? files : []).forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className =
+                        'file-item p-4 rounded-lg flex flex-col md:flex-row md:items-center md:justify-between gap-3';
+                    // Build download/cancel button depending on activeDownloads
+                    const downloadBtnHtml = `
+                        <button id="download-btn-${encodeURIComponent(file.name)}" onclick="downloadFile('${encodeURIComponent(file.name).replace(/'/g, "\\'")}', '${file.name.replace(/'/g, "\\'")}')" 
+                            class="btn-primary px-4 py-2.5 rounded-lg font-semibold inline-flex items-center justify-center space-x-2 flex-1 md:flex-initial">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                        </button>
+                        `;
+                    fileItem.innerHTML = `
+                <div class="flex items-center space-x-3 flex-1 min-w-0">
+                    <div class="text-3xl flex-shrink-0">${getFileIcon(file.name)}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold truncate">${file.name}</p>
+                        <p class="text-xs text-secondary mono">${formatFileSize(file.size)} • ${file.modified}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <button onclick="viewFile('${encodeURIComponent(file.name).replace(/'/g, "\\'")}', '${file.type}')" 
+                           class="btn-secondary px-4 py-2.5 rounded-lg font-semibold inline-flex items-center justify-center space-x-2 flex-1 md:flex-initial">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        
+                    </button>
+                        ${downloadBtnHtml}
+                    <button onclick="deleteFile('${file.name}')" class="btn-secondary px-4 py-2.5 rounded-lg flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+                    filesList.appendChild(fileItem);
+                });
+            } catch (err) {
+                filesList.innerHTML =
+                    '<div class="text-center text-red-500 py-12"><p>Failed to load files</p></div>';
+            }
+        }
+        refreshBtn.addEventListener('click', async () => {
+            await registerRequest();
+            loadFiles().catch(() => {});
+            backoffIndex = 0;
+        });
+        window.downloadFile = async function(encodedFilename, originalFilename) {
+            try {
+                await registerRequest();
+            } catch (e) {}
+            try {
+                await requestWakeLock();
+            } catch (e) {}
+            updateSystemStatus(`Starting download ${originalFilename}`, 'warning', true);
+            // Heartbeat: keep session alive for the duration of the download.
+            let downloadHeartbeatId = setInterval(() => {
+                registerRequest().catch(() => {});
+            }, 30 * 1000);
+            setTimeout(() => {
+                markOperationEnd();
+                downloadHeartbeatId = null;
+            }, SESSION_TIMEOUT_MS);
+            try {
+                const url = `/files/${encodedFilename}`;
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    window.location.href = url;
+                } else {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = originalFilename;
+                    a.rel = 'noopener';
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+                setTimeout(() => {
+                    updateSystemStatus('Ready', 'info', false);
+                    try {
+                        releaseWakeLockIfIdle();
+                    } catch (e) {}
+                }, 3000);
+            } catch (err) {
+                console.error(err);
+                markOperationEnd();
+                updateSystemStatus('Download failed. Please check your connection.', 'warning', false);
+                try {
+                    releaseWakeLockIfIdle();
+                } catch (e) {}
+            }
+        };
+        // ------------------------------
+        // FILE PREVIEW MODAL
+        // ------------------------------
+        window.viewFile = function(filename, mimeType) {
+            previewTitle.textContent = decodeURIComponent(filename);
+            previewContent.innerHTML = '';
+            const viewUrl = `/view/${filename}`;
+            if (mimeType.startsWith('image/')) {
+                previewContent.innerHTML =
+                    `<img src="${viewUrl}" alt="${decodeURIComponent(filename)}" class="rounded-lg">`;
+            } else if (mimeType.startsWith('video/')) {
+                previewContent.innerHTML =
+                    `<video controls class="rounded-lg w-full"><source src="${viewUrl}" type="${mimeType}"></video>`;
+                // Heartbeat: keep session alive while video is actively playing.
+                // Ping the server every 5 minutes.
+                const mediaEl = previewContent.querySelector('video');
+                let lastMediaHeartbeat = 0;
+                mediaEl.addEventListener('timeupdate', () => {
+                    const now = Date.now();
+                    if (now - lastMediaHeartbeat > 5 * 60 * 1000) {
+                        lastMediaHeartbeat = now;
+                        registerRequest().catch(() => {});
+                    }
+                });
+            } else if (mimeType.startsWith('audio/')) {
+                previewContent.innerHTML =
+                    `<audio controls class="w-full"><source src="${viewUrl}" type="${mimeType}"></audio>`;
+                // Same heartbeat for audio playback
+                const mediaEl = previewContent.querySelector('audio');
+                let lastMediaHeartbeat = 0;
+                mediaEl.addEventListener('timeupdate', () => {
+                    const now = Date.now();
+                    if (now - lastMediaHeartbeat > 5 * 60 * 1000) {
+                        lastMediaHeartbeat = now;
+                        registerRequest().catch(() => {});
+                    }
+                });
+            } else if (mimeType === 'application/pdf') {
+                try {
+                    window.open(viewUrl, '_blank', 'noopener');
+                } catch (e) {
+                    window.location.href = viewUrl;
+                }
+                return;
+            } else if (mimeType.startsWith('text/')) {
+                previewContent.innerHTML =
+                    `<iframe src="${viewUrl}" class="w-full h-[80vh] rounded-lg border-0"></iframe>`;
+            } else {
+                previewContent.innerHTML = `
+                <div class="text-center py-12">
+                    <div class="text-5xl mb-4">${getFileIcon(decodeURIComponent(filename))}</div>
+                    <p class="text-secondary mb-4">Preview not available for this file type</p>
+                    <button onclick="downloadFile('${filename}', '${decodeURIComponent(filename).replace(/'/g, "\\'")}')" class="btn-primary px-6 py-3 rounded-lg font-semibold inline-flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        <span>Download File</span>
+                    </button>
+                </div>
+                `;
+            }
+            previewModal.classList.remove('hidden');
+            markOperationStart();
+        };
+        closePreview.addEventListener('click', () => {
+            previewModal.classList.add('hidden');
+            markOperationEnd();
+            previewContent.innerHTML = '';
+        });
+        previewModal.addEventListener('click', (e) => {
+            if (e.target === previewModal) {
+                previewModal.classList.add('hidden');
+                markOperationEnd();
+                previewContent.innerHTML = '';
+            }
+        });
+        // ------------------------------
+        // DELETE MODAL & CONFIRMATION
+        // ------------------------------
+        window.deleteFile = function(filename) {
+            pendingDeleteFilename = filename;
+            deleteFileName.textContent = filename;
+            deleteModal.classList.remove('hidden');
+        };
+        cancelDelete.addEventListener('click', () => {
+            deleteModal.classList.add('hidden');
+            pendingDeleteFilename = null;
+        });
+        deleteModal.addEventListener('click', (e) => {
+            if (e.target === deleteModal) {
+                deleteModal.classList.add('hidden');
+                pendingDeleteFilename = null;
+            }
+        });
+        confirmDelete.addEventListener('click', async () => {
+            if (!pendingDeleteFilename) return;
+            const filename = pendingDeleteFilename;
+            deleteModal.classList.add('hidden');
+            pendingDeleteFilename = null;
+            try {
+                await registerRequest();
+                const response = await fetch(`/files/${encodeURIComponent(filename)}`, {
+                    method: 'DELETE',
+                    credentials: 'same-origin'
+                });
+                if (response.status === 401) {
+                    showMessage('Session expired. Please log in again.', 'session-expired');
+                    setTimeout(() => location.reload(), 2000);
+                    return;
+                }
+                const data = await response.json();
+                if (response.ok) {
+                    showMessage(data.message || 'File deleted successfully', 'delete-success');
+                    await notifyServerOfChange();
+                    await loadFiles();
+                    backoffIndex = 0;
+                } else {
+                    showMessage(data.error || 'Delete failed', 'error');
+                }
+            } catch (err) {
+                showMessage('Delete failed. Please try again.', 'error');
+            }
+        });
+        // Escape key support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' || e.key === 'Esc') {
+                if (!previewModal.classList.contains('hidden')) {
+                    previewModal.classList.add('hidden');
+                    markOperationEnd();
+                    previewContent.innerHTML = '';
+                }
+                if (!deleteModal.classList.contains('hidden')) {
+                    deleteModal.classList.add('hidden');
+                    pendingDeleteFilename = null;
+                }
+            }
+        });
+        // ------------------------------
+        // UTILITY FUNCTIONS
+        // ------------------------------
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                // Documents
+                pdf: '📕',
+                doc: '📝',
+                docx: '📝',
+                txt: '⌨️',
+                rtf: '⌨️',
+                md: '📓',
+                // Images
+                png: '🖼️',
+                jpg: '🖼️',
+                jpeg: '🖼️',
+                gif: '🖼️',
+                webp: '🖼️',
+                svg: '🖼️',
+                // Video & subtitles
+                mp4: '🎬',
+                avi: '🎬',
+                mkv: '🎬',
+                mov: '🎬',
+                webm: '🎬',
+                // Audio
+                mp3: '🎧',
+                wav: '🎧',
+                flac: '🎧',
+                // Archives
+                zip: '📦',
+                rar: '📦',
+                '7z': '📦',
+                tar: '📦',
+                gz: '📦',
+                tgz: '📦',
+                // Code & scripts
+                py: '🐍',
+                js: '🟨',
+                ts: '📜',
+                html: '🌐',
+                css: '✨',
+                c: '💻',
+                h: '💻',
+                cpp: '💻',
+                cs: '💻',
+                php: '💻',
+                rb: '💻',
+                go: '💻',
+                swift: '💻',
+                sh: '💻',
+                java: '💻',
+                // Data / spreadsheets / BI files
+                xls: '📊',
+                xlsx: '📊',
+                csv: '📊',
+                tsv: '📊',
+                parquet: '🔟',
+                pbix: '📊',
+                pbit: '📊',
+                pbip: '📊',
+                twbx: '📊',
+                twb: '📊',
+                hyper: '📊',
+                tds: '📊',
+                // Databases
+                db: '🗄️',
+                sqlite: '🗄️',
+                sqlite3: '🗄️',
+                mdb: '🗄️',
+                accdb: '🗄️',
+                mdf: '🗄️',
+                ldf: '🗄️',
+                frm: '🗄️',
+                ibd: '🗄️',
+                myd: '🗄️',
+                myi: '🗄️',
+                // Structured data / config
+                json: '📋',
+                bson: '🍃',
+                yml: '⚙️',
+                yaml: '⚙️',
+                xml: '🧾',
+                mobileconfig: '⚙️'
+            };
+            return icons[ext] || '📄';
+        }
+
+        function showMessage(message, status) {
+            const statusClasses = {
+                'upload-success': 'text-green-500 font-medium',
+                'delete-success': 'text-red-500 font-medium',
+                'warning': 'text-yellow-400 font-medium',
+                'session-expired': 'text-orange-500 font-medium'
+            };
+            uploadMessage.textContent = message;
+            uploadMessage.className = statusClasses[status] || 'text-gray-400 font-medium';
+            uploadMessage.classList.remove('hidden');
+            systemStatusText.classList.add('hidden');
+            setTimeout(() => {
+                uploadMessage.classList.add('hidden');
+                uploadMessage.textContent = '';
+                systemStatusText.classList.remove('hidden');
+            }, 5000);
+        }
+
+        function updateSystemStatus(message, status = 'info', persistent = false) {
+            const map = {
+                'info': 'text-gray-400 font-medium',
+                'warning': 'text-yellow-400 font-medium',
+                'success': 'text-green-500 font-medium'
+            };
+            if (systemStatusTimer) {
+                clearTimeout(systemStatusTimer);
+                systemStatusTimer = null;
+            }
+            const cls = map[status] || map.info;
+            systemStatusText.textContent = message;
+            systemStatusText.className = cls;
+            systemStatusText.classList.remove('hidden');
+            uploadMessage.classList.add('hidden');
+            if (!persistent) {
+                systemStatusTimer = setTimeout(() => {
+                    systemStatusText.textContent = 'Ready';
+                    systemStatusText.className = 'text-gray-400 font-medium';
+                }, 3000);
+            }
+        }
+        // ------------------------------
+        // APPLICATION INITIALIZATION
+        // ------------------------------
+        async function init() {
+            try {
+                const authCheck = await fetch('/check-auth', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+                const authData = await authCheck.json();
+                if (authData.authenticated) {
+                    showMainContent();
+                } else {
+                    authModal.classList.remove('hidden');
+                }
+                const themeResponse = await fetch('/theme', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                });
+                const themeData = await themeResponse.json();
+                if (themeData.theme === 'light') {
+                    document.documentElement.classList.remove('dark');
+                    if (sunIcon) sunIcon.classList.remove('hidden');
+                    if (moonIcon) moonIcon.classList.add('hidden');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    if (sunIcon) sunIcon.classList.add('hidden');
+                    if (moonIcon) moonIcon.classList.remove('hidden');
+                }
+            } catch (err) {
+                authModal.classList.remove('hidden');
+            }
+        }
+        // Prevent accidental unload while transfers are active
+        window.addEventListener('beforeunload', (e) => {
+            if (isUploading) {
+                const msg = 'Upload is in progress. Leaving will cancel it.';
+                e.preventDefault();
+                e.returnValue = msg;
+                return msg;
+            }
+        });
+        init();
+    </script>
+
+</body>
+
+</html>
