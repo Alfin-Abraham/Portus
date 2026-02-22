@@ -1,4 +1,4 @@
-# Portus — Secure LAN File Sharing
+# Portus | Secure LAN File Sharing
 
 Portus is a self-hosted, local-network file sharing server built with **FastAPI** and **Uvicorn**. It runs directly from your machine and makes files instantly accessible to every device on your network — phones, tablets, laptops — through a clean browser UI, with no cloud services, no accounts, and no data leaving your LAN.
 
