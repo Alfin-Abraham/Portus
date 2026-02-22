@@ -11,7 +11,7 @@ Portus is a self-hosted, local-network file sharing server built with **FastAPI*
 - [Requirements](#requirements)
 - [Setup & Installation](#setup--installation)
   - [1. Clone the repository](#1-clone-the-repository)
-  - [2. Install dependencies](#2-install-dependencies)
+  - [2. Create and activate a virtual environment](#2-create-and-activate-a-virtual-environment)
   - [3. Configure your PIN](#3-configure-your-pin)
   - [4. Generate SSL certificates (recommended)](#4-generate-ssl-certificates-recommended)
   - [5. Run the server](#5-run-the-server)
@@ -68,7 +68,7 @@ Portus/
 
 ## Requirements
 
-- Python 3.10 or later
+- Python 3.13
 - pip
 
 Dependencies (installed via `requirements.txt`):
@@ -77,6 +77,7 @@ Dependencies (installed via `requirements.txt`):
 |---|---|
 | fastapi | 0.129.0 |
 | uvicorn | 0.41.0 |
+| starlette | 0.52.1 |
 | cryptography | 46.0.5 |
 | python-multipart | 0.0.22 |
 | aiofiles | 25.1.0 |
@@ -96,11 +97,25 @@ git clone https://github.com/Alfin-Abraham/Portus.git
 cd Portus
 ```
 
-### 2. Install dependencies
+### 2. Create and activate a virtual environment
 
+**Windows:**
 ```bash
+python -m venv venv/ --prompt Portus
+venv\Scripts\Activate.ps1
+python.exe -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+**macOS / Linux:**
+```bash
+python -m venv venv/ --prompt Portus
+source venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+Your terminal prompt will change to `(Portus)` confirming the environment is active.
 
 ### 3. Configure your PIN
 
