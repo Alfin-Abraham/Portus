@@ -78,6 +78,7 @@ Dependencies (installed via `requirements.txt`):
 | fastapi | 0.129.0 |
 | uvicorn | 0.41.0 |
 | starlette | 0.52.1 |
+| itsdangerous | 2.2.0 |
 | cryptography | 46.0.5 |
 | python-multipart | 0.0.22 |
 | aiofiles | 25.1.0 |
